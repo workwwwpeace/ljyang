@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班級行為加分板</title>
+    <style>
+        body { font-family: 'Microsoft JhengHei', sans-serif; background-color: #f4f7f6; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        h1 { color: #333; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; width: 100%; max-width: 1000px; }
+        .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-5px); }
+        .name { font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; color: #2c3e50; }
+        .score { font-size: 3rem; margin: 10px 0; color: #e67e22; }
+        .btn-group { display: flex; justify-content: center; gap: 10px; }
+        button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; transition: background 0.3s; }
+        .plus { background-color: #27ae60; color: white; }
+        .plus:hover { background-color: #2ecc71; }
+        .minus { background-color: #c0392b; color: white; }
+        .minus:hover { background-color: #e74c3c; }
+        .reset-btn { margin-top: 30px; background-color: #7f8c8d; color: white; }
+    </style>
+</head>
+<body>
+
+    <h1>🏆 行業表現加分板</h1>
+    <p>設定目標：主動發言 (+1)、幫助同學 (+2)、準時繳交 (+1)</p>
+
+    <div class="grid" id="scoreboard">
+        </div>
+
+    <button class="reset-btn" onclick="resetAll()">全部清空重置</button>
+
+    <script>
+        const studentCount = 8;
+        const storageKey = 'classScores';
+
+        // 初始化分數：從本地儲存讀取或設定為 0
+        let scores = JSON.parse(localStorage.getItem(storageKey)) || Array(studentCount).fill(0);
+
+        const scoreboard = document.getElementById('scoreboard');
+
+        function render() {
+            scoreboard.innerHTML = '';
+            for (let i = 0; i < studentCount; i++) {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="name">學生 ${i + 1}</div>
+                    <div class="score" id="score-${i}">${scores[i]}</div>
+                    <div class="btn-group">
+                        <button class="minus" onclick="updateScore(${i}, -1)">-1</button>
+                        <button class="plus" onclick="updateScore(${i}, 1)">+1</button>
+                    </div>
+                `;
+                scoreboard.appendChild(card);
+            }
+        }
+
+        function updateScore(index, change) {
+            scores[index] += change;
+            saveAndRender();
+        }
+
+        function resetAll() {
+            if(confirm("確定要將所有分數歸零嗎？")) {
+                scores = Array(studentCount).fill(0);
+                saveAndRender();
+            }
+        }
+
+        function saveAndRender() {
+            localStorage.setItem(storageKey, JSON.stringify(scores));
+            render();
+        }
+
+        render();
+    </script>
+</body>
+</html>
