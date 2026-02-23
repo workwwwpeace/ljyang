@@ -1,0 +1,2933 @@
+
+<!doctype html>
+<html lang="zh-TW" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>輔導處智慧課表管理系統</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Microsoft JhengHei', 'Microsoft YaHei', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100%;
+      height: 100%;
+    }
+    
+    html {
+      height: 100%;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    .app-container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 20px;
+      background: white;
+      min-height: 100%;
+      box-shadow: 0 0 50px rgba(0,0,0,0.1);
+      font-size: 16px;
+    }
+    
+    .app-container.font-small {
+      font-size: 14px;
+    }
+    
+    .app-container.font-large {
+      font-size: 18px;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px 30px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 20px rgba(102,126,234,0.3);
+    }
+    
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .header-title {
+      font-size: 2em;
+      font-weight: bold;
+      margin: 0;
+    }
+    
+    .header-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .stats-container {
+      display: flex;
+      gap: 15px;
+      background: rgba(255,255,255,0.25);
+      padding: 10px 18px;
+      border-radius: 10px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .stat-icon {
+      font-size: 1.2em;
+    }
+    
+    .stat-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    
+    .stat-number {
+      font-size: 1.2em;
+      font-weight: bold;
+      background: rgba(255,255,255,0.4);
+      padding: 3px 10px;
+      border-radius: 6px;
+      text-align: center;
+      line-height: 1.2;
+    }
+    
+    .stat-label {
+      font-size: 0.7em;
+      opacity: 0.95;
+      text-align: center;
+    }
+    
+    .font-size-controls {
+      display: flex;
+      gap: 5px;
+      background: rgba(255,255,255,0.2);
+      padding: 5px;
+      border-radius: 10px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .font-btn {
+      background: rgba(255,255,255,0.3);
+      border: 2px solid transparent;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85em;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    
+    .font-btn:hover {
+      background: rgba(255,255,255,0.5);
+      transform: scale(1.05);
+    }
+    
+    .font-btn.active {
+      background: white;
+      color: #667eea;
+      border-color: white;
+    }
+    
+    .login-btn {
+      background: rgba(255,255,255,0.3);
+      border: 2px solid white;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.9em;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    
+    .login-btn:hover {
+      background: white;
+      color: #667eea;
+      transform: scale(1.05);
+    }
+    
+    .login-btn.logged-in {
+      background: #10b981;
+      border-color: #10b981;
+    }
+    
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 3px solid #e5e7eb;
+      padding-bottom: 0;
+      flex-wrap: wrap;
+    }
+    
+    .nav-tab {
+      background: #f3f4f6;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 10px 10px 0 0;
+      cursor: pointer;
+      font-size: 1.125em;
+      font-weight: bold;
+      color: #6b7280;
+      transition: all 0.3s;
+    }
+    
+    .nav-tab:hover {
+      background: #e5e7eb;
+      transform: translateY(-2px);
+    }
+    
+    .nav-tab.active {
+      background: #667eea;
+      color: white;
+      box-shadow: 0 -3px 10px rgba(102,126,234,0.3);
+    }
+    
+    .nav-tab.admin-only {
+      display: none;
+    }
+    
+    .nav-tab.admin-only.visible {
+      display: block;
+    }
+    
+    .date-navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding: 20px;
+      background: #f9fafb;
+      border-radius: 12px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .date-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .week-btn {
+      background: #667eea;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    
+    .week-btn:hover {
+      background: #5568d3;
+      transform: scale(1.05);
+    }
+    
+    .week-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .date-display {
+      font-size: 1.125em;
+      font-weight: bold;
+      color: #1f2937;
+      padding: 10px 20px;
+      background: white;
+      border-radius: 10px;
+      border: 2px solid #667eea;
+    }
+    
+    .admin-tools {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .admin-btn {
+      background: white;
+      border: 2px solid #667eea;
+      color: #667eea;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.9375em;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    
+    .admin-btn:hover {
+      background: #667eea;
+      color: white;
+      transform: scale(1.05);
+    }
+    
+    .admin-btn:disabled {
+      background: #e5e7eb;
+      border-color: #9ca3af;
+      color: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .admin-btn.primary {
+      background: #667eea;
+      color: white;
+    }
+    
+    .admin-btn.primary:hover {
+      background: #5568d3;
+    }
+    
+    .admin-btn.danger {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+    
+    .admin-btn.danger:hover {
+      background: #ef4444;
+      color: white;
+    }
+    
+    .schedule-layout {
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+    }
+    
+    .teacher-sidebar {
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 15px;
+      min-width: 200px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    
+    .teacher-sidebar.collapsed {
+      min-width: 70px;
+      padding: 12px 8px;
+    }
+    
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .sidebar-title {
+      font-size: 1.0625em;
+      font-weight: bold;
+      color: #1f2937;
+    }
+    
+    .collapse-btn {
+      background: #f3f4f6;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .collapse-btn:hover {
+      background: #e5e7eb;
+      transform: scale(1.1);
+    }
+    
+    .teacher-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .teacher-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      background: #f9fafb;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+    
+    .teacher-item:hover {
+      background: #f3f4f6;
+      transform: translateX(3px);
+    }
+    
+    .teacher-color {
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      flex-shrink: 0;
+      border: 2px solid rgba(0,0,0,0.1);
+    }
+    
+    .teacher-name-text {
+      flex: 1;
+      font-weight: bold;
+      color: #1f2937;
+      font-size: 0.9em;
+      min-width: 0;
+    }
+    
+    .teacher-toggle-btn {
+      background: #10b981;
+      border: none;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.75em;
+      font-weight: bold;
+      transition: all 0.3s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    
+    .teacher-toggle-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+    
+    .teacher-toggle-btn.hidden-state {
+      background: #9ca3af;
+    }
+    
+    .teacher-sidebar.collapsed .teacher-name-text {
+      display: none;
+    }
+    
+    .teacher-sidebar.collapsed .teacher-toggle-btn {
+      padding: 6px;
+      font-size: 1em;
+    }
+    
+    .teacher-sidebar.collapsed .sidebar-title {
+      display: none;
+    }
+    
+    .teacher-sidebar.collapsed .teacher-item {
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .schedule-main {
+      flex: 1;
+      overflow-x: auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    }
+    
+    .schedule-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+    
+    .schedule-table th,
+    .schedule-table td {
+      border: 2px solid #e5e7eb;
+      padding: 12px;
+      text-align: center;
+      vertical-align: top;
+      width: 18%;
+    }
+    
+    .schedule-table th.period-header,
+    .schedule-table td:first-child {
+      width: 10%;
+    }
+    
+    .schedule-table th {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-weight: bold;
+      font-size: 1em;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    .schedule-table th.period-header {
+      background: #f3f4f6;
+      color: #1f2937;
+      font-weight: bold;
+      width: 80px;
+      min-width: 80px;
+      max-width: 80px;
+    }
+    
+    .schedule-table td {
+      min-height: 70px;
+      background: white;
+    }
+    
+    .schedule-badges-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-start;
+      align-items: stretch;
+      width: 100%;
+    }
+    
+    .schedule-badge {
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.875em;
+      color: #000;
+      flex: 0 0 calc(50% - 4px);
+      min-width: 0;
+      text-align: center;
+      transition: all 0.3s;
+      border: 2px solid rgba(0,0,0,0.1);
+      position: relative;
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    
+    .schedule-badge.conflict {
+      animation: conflictPulse 1.5s ease-in-out infinite;
+      border-width: 3px;
+    }
+    
+    @keyframes conflictPulse {
+      0%, 100% {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+      }
+      50% {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+      }
+    }
+    
+    .schedule-badge:hover {
+      transform: scale(1.02);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    
+    .badge-teacher {
+      font-weight: bold;
+      font-size: 1em;
+      margin-bottom: 4px;
+    }
+    
+    .badge-activity {
+      font-size: 0.9em;
+      margin-bottom: 2px;
+    }
+    
+    .badge-classroom {
+      font-size: 0.85em;
+      opacity: 0.9;
+    }
+    
+    .badge-note {
+      font-size: 0.8em;
+      opacity: 0.85;
+      font-style: italic;
+      margin-top: 2px;
+    }
+    
+    .badge-activity.training {
+      color: #1e40af;
+      font-weight: bold;
+    }
+    
+    .badge-activity.holiday {
+      color: #dc2626;
+      font-weight: bold;
+    }
+    
+    .simple-badge {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.875em;
+      font-weight: bold;
+      color: #000;
+      flex: 0 0 calc(50% - 4px);
+      min-width: 0;
+      text-align: center;
+      transition: all 0.3s;
+      border: 2px solid rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    
+    .simple-badge:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    
+    .activity-buttons {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      justify-content: flex-start;
+    }
+    
+    .edit-btn {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.6875em;
+      transition: all 0.3s;
+    }
+    
+    .edit-btn:hover {
+      background: #2563eb;
+      transform: scale(1.05);
+    }
+    
+    .delete-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.6875em;
+      transition: all 0.3s;
+    }
+    
+    .delete-btn:hover {
+      background: #dc2626;
+      transform: scale(1.05);
+    }
+    
+    .support-badge {
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 0.875em;
+      font-weight: bold;
+      color: #000;
+      border: 2px solid rgba(0,0,0,0.1);
+      text-align: center;
+      transition: all 0.3s;
+    }
+    
+    .support-badge:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    
+    .all-support {
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 0.875em;
+      font-weight: bold;
+      color: #10b981;
+      text-align: center;
+      border: 2px solid #10b981;
+      background: #d1fae5;
+    }
+    
+    .classroom-badge {
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.875em;
+      font-weight: bold;
+      color: #000;
+      text-align: left;
+      transition: all 0.3s;
+      border: 2px solid rgba(0,0,0,0.1);
+      margin: 4px 0;
+      line-height: 1.6;
+    }
+    
+    .classroom-badge:hover {
+      transform: scale(1.02);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    
+    .classroom-name {
+      font-size: 1.1em;
+      margin-bottom: 4px;
+    }
+    
+    .classroom-teacher {
+      font-size: 0.95em;
+      margin-bottom: 2px;
+    }
+    
+    .classroom-activity {
+      font-size: 0.85em;
+      opacity: 0.9;
+    }
+    
+    .settings-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .settings-section {
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    }
+    
+    .settings-section-title {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #1f2937;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 3px solid #667eea;
+    }
+    
+    .settings-form-group {
+      margin-bottom: 25px;
+    }
+    
+    .settings-label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #374151;
+      font-size: 1em;
+    }
+    
+    .settings-input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: all 0.3s;
+      font-family: 'Microsoft JhengHei', 'Microsoft YaHei', Arial, sans-serif;
+    }
+    
+    .settings-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+    
+    .config-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .config-item {
+      background: #f9fafb;
+      padding: 20px;
+      border-radius: 12px;
+      border: 2px solid #e5e7eb;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .config-item:hover {
+      border-color: #667eea;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    
+    .config-item.new-slot {
+      border-style: dashed;
+      background: #fefefe;
+    }
+    
+    .color-preview {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: 3px solid rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+    
+    .config-name-input {
+      flex: 1;
+      min-width: 150px;
+      padding: 12px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: bold;
+      transition: all 0.3s;
+      font-family: 'Microsoft JhengHei', 'Microsoft YaHei', Arial, sans-serif;
+    }
+    
+    .config-name-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+    
+    .color-picker-wrapper {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .color-picker {
+      width: 60px;
+      height: 40px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .color-picker:hover {
+      transform: scale(1.05);
+      border-color: #667eea;
+    }
+    
+    .color-input {
+      width: 100px;
+      padding: 10px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 0.875em;
+      font-family: monospace;
+      transition: all 0.3s;
+    }
+    
+    .color-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+    
+    .save-settings-btn {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 14px 40px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: bold;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+    
+    .save-settings-btn:hover {
+      background: #059669;
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(16,185,129,0.3);
+    }
+    
+    .save-settings-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .activity-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .activity-item {
+      background: #f9fafb;
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px solid #e5e7eb;
+      transition: all 0.3s;
+    }
+    
+    .activity-item:hover {
+      border-color: #667eea;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    
+    .activity-item.new-slot {
+      border-style: dashed;
+      background: #fefefe;
+    }
+    
+    .activity-input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 0.9375em;
+      font-weight: bold;
+      transition: all 0.3s;
+      font-family: 'Microsoft JhengHei', 'Microsoft YaHei', Arial, sans-serif;
+    }
+    
+    .activity-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+    
+    .modal.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 700px;
+      width: 90%;
+      max-height: 90%;
+      overflow-y: auto;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    
+    .modal-header {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 25px;
+      color: #1f2937;
+      border-bottom: 3px solid #667eea;
+      padding-bottom: 15px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #374151;
+      font-size: 1em;
+    }
+    
+    .form-input,
+    .form-select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 0.9375em;
+      transition: all 0.3s;
+      font-family: 'Microsoft JhengHei', 'Microsoft YaHei', Arial, sans-serif;
+    }
+    
+    .form-input:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+    
+    .weekday-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      background: #f3f4f6;
+      padding: 15px;
+      border-radius: 10px;
+    }
+    
+    .weekday-item {
+      text-align: center;
+    }
+    
+    .weekday-checkbox {
+      display: none;
+    }
+    
+    .weekday-label {
+      display: block;
+      padding: 12px;
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: bold;
+    }
+    
+    .weekday-checkbox:checked + .weekday-label {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    
+    .period-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      background: #f3f4f6;
+      padding: 15px;
+      border-radius: 10px;
+    }
+    
+    .period-item {
+      text-align: center;
+    }
+    
+    .period-checkbox {
+      display: none;
+    }
+    
+    .period-label {
+      display: block;
+      padding: 10px;
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: bold;
+      font-size: 0.875em;
+    }
+    
+    .period-checkbox:checked + .period-label {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .checkbox-input {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+    
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+      justify-content: flex-end;
+    }
+    
+    .modal-btn {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    
+    .modal-btn:disabled {
+      background: #d1d5db;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .modal-btn.primary {
+      background: #667eea;
+      color: white;
+    }
+    
+    .modal-btn.primary:hover:not(:disabled) {
+      background: #5568d3;
+      transform: scale(1.05);
+    }
+    
+    .modal-btn.secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+    
+    .modal-btn.secondary:hover {
+      background: #d1d5db;
+      transform: scale(1.05);
+    }
+    
+    .modal-btn.danger {
+      background: #ef4444;
+      color: white;
+    }
+    
+    .modal-btn.danger:hover {
+      background: #dc2626;
+      transform: scale(1.05);
+    }
+    
+    .query-time-controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    
+    .time-jump-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    
+    .time-jump-btn:hover {
+      background: #5568d3;
+      transform: scale(1.05);
+    }
+    
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1f2937;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+      z-index: 2000;
+      animation: slideIn 0.3s ease;
+      font-size: 0.9375em;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    .individual-schedule-wrapper {
+      padding: 20px;
+    }
+    
+    .teacher-select-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    
+    .confirmation-modal {
+      text-align: center;
+    }
+    
+    .confirmation-text {
+      font-size: 1.125em;
+      color: #374151;
+      margin: 20px 0;
+      line-height: 1.6;
+    }
+    
+    .warning-text {
+      color: #dc2626;
+      font-weight: bold;
+    }
+    
+    .warning-box {
+      background: #fef2f2;
+      border: 2px solid #ef4444;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      color: #991b1b;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="app-container" id="appContainer">
+   <header>
+    <div class="header">
+     <div class="header-top">
+      <h1 class="header-title" id="systemTitle">💡 輔導處智慧課表管理系統</h1>
+      <div class="header-controls">
+       <div class="stats-container">
+        <div class="stat-item">
+         <div class="stat-icon">
+          📊
+         </div>
+         <div class="stat-content">
+          <div class="stat-number" id="weekScheduleCount">
+           0
+          </div>
+          <div class="stat-label">
+           本週排程
+          </div>
+         </div>
+        </div>
+        <div class="stat-item">
+         <div class="stat-icon">
+          🏫
+         </div>
+         <div class="stat-content">
+          <div class="stat-number" id="classroomCount">
+           0
+          </div>
+          <div class="stat-label">
+           教室節次
+          </div>
+         </div>
+        </div>
+        <div class="stat-item">
+         <div class="stat-icon">
+          🏖️
+         </div>
+         <div class="stat-content">
+          <div class="stat-number" id="leaveCount">
+           0
+          </div>
+          <div class="stat-label">
+           請假人次
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="font-size-controls"><button class="font-btn" data-size="small">🅰️ 小</button> <button class="font-btn active" data-size="medium">A 中</button> <button class="font-btn" data-size="large">A+ 大</button>
+       </div><button class="login-btn" id="loginBtn">🔒 管理員登入</button>
+      </div>
+     </div>
+    </div>
+   </header>
+   <nav>
+    <div class="nav-tabs"><button class="nav-tab active" data-tab="complete">📊 完整檢視</button> <button class="nav-tab" data-tab="simple">🔍 精簡檢視</button> <button class="nav-tab" data-tab="individual">🧍 人員課表</button> <button class="nav-tab" data-tab="support">🤝 支援服務</button> <button class="nav-tab" data-tab="classroom">🏠 教室使用</button> <button class="nav-tab admin-only" data-tab="settings" id="settingsTab">⚙️ 管理設定</button>
+    </div>
+   </nav>
+   <main>
+    <div class="date-navigation">
+     <div class="date-controls"><button class="week-btn" id="prevWeekBtn">⬅️ 上週</button> <button class="week-btn" id="thisWeekBtn">📍 本週</button> <button class="week-btn" id="nextWeekBtn">➡️ 下週</button>
+      <div class="date-display" id="dateDisplay">
+       載入中...
+      </div>
+     </div>
+     <div class="admin-tools" id="adminTools" style="display: none;"><button class="admin-btn" id="queryBtn">🔍 查詢</button> <button class="admin-btn" id="quickCopyBtn">🔄 快速複製</button> <button class="admin-btn danger" id="clearBtn">🗑️ 清空重置</button> <button class="admin-btn primary" id="newScheduleBtn">📝 新排程</button>
+     </div>
+    </div>
+    <div id="scheduleContainer"></div>
+   </main>
+  </div>
+  <div class="modal" id="loginModal">
+   <div class="modal-content">
+    <div class="modal-header">
+     🔐 管理員登入
+    </div>
+    <form id="loginForm">
+     <div class="form-group"><label class="form-label" for="loginPassword">密碼</label> <input type="password" class="form-input" id="loginPassword" placeholder="請輸入管理員密碼" required>
+     </div>
+     <div class="modal-buttons"><button type="button" class="modal-btn secondary" id="cancelLoginBtn">取消</button> <button type="submit" class="modal-btn primary">登入</button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <div class="modal" id="scheduleModal">
+   <div class="modal-content">
+    <div class="modal-header" id="scheduleModalTitle">
+     📝 新增排程
+    </div>
+    <div id="classroomWarning" class="warning-box" style="display: none;">
+     ⚠️ 該教室在此時段已被預約
+    </div>
+    <form id="scheduleForm">
+     <div class="form-group"><label class="form-label">📅 星期</label>
+      <div class="weekday-grid">
+       <div class="weekday-item"><input type="checkbox" class="weekday-checkbox" id="day1" value="週一"> <label for="day1" class="weekday-label">週一</label>
+       </div>
+       <div class="weekday-item"><input type="checkbox" class="weekday-checkbox" id="day2" value="週二"> <label for="day2" class="weekday-label">週二</label>
+       </div>
+       <div class="weekday-item"><input type="checkbox" class="weekday-checkbox" id="day3" value="週三"> <label for="day3" class="weekday-label">週三</label>
+       </div>
+       <div class="weekday-item"><input type="checkbox" class="weekday-checkbox" id="day4" value="週四"> <label for="day4" class="weekday-label">週四</label>
+       </div>
+       <div class="weekday-item"><input type="checkbox" class="weekday-checkbox" id="day5" value="週五"> <label for="day5" class="weekday-label">週五</label>
+       </div>
+      </div>
+     </div>
+     <div class="form-group"><label class="form-label">⏰ 時段</label>
+      <div class="period-grid">
+       <div class="period-item"><input type="checkbox" class="period-checkbox" id="period0" value="早自修"> <label for="period0" class="period-label">早自修</label>
+       </div>
+       <div class="period-item"><input type="checkbox" class="period-checkbox" id="period1" value="第一節"> <label for="period1" class="period-label">第一節</label>
+       </div>
+       <div class="period-item"><input type="checkbox" class="period-checkbox" id="period2" value="第二節"> <label for="period2" class="period-label">第二節</label>
+       </div>
+       <div class="period-item"><input type="checkbox" class="period-checkbox" id="period3" value="第三節"> <label for="period3" class="period-label">第三節</label>
+       </div>
+       <div class="period-item"><input type="checkbox" class="period-checkbox" id="period4" value="第四節"> <label for="period4" class="period-label">第四節</label>
+       </div>
+       <div class="period-item"><input type="checkbox" class="period-checkbox" id="period5" value="午休"> <label for="period5" class="period-label">午休</label>
+       </div>
+       <div class="period-item"><input type="checkbox" class="period-checkbox" id="period6" value="第五節"> <label for="period6" class="period-label">第五節</label>
+       </div>
+       <div class="period-item"><input type="checkbox" class="period-checkbox" id="period7" value="第六節"> <label for="period7" class="period-label">第六節</label>
+       </div>
+       <div class="period-item"><input type="checkbox" class="period-checkbox" id="period8" value="第七節"> <label for="period8" class="period-label">第七節</label>
+       </div>
+      </div>
+     </div>
+     <div class="form-group"><label class="form-label" for="teacherSelect">👤 負責人員</label> <select class="form-select" id="teacherSelect" required> <option value="">請選擇人員...</option> </select>
+     </div>
+     <div class="form-group"><label class="form-label" for="activityTypeSelect">📚 活動類型</label> <select class="form-select" id="activityTypeSelect" required> <option value="">請選擇活動類型...</option> </select>
+     </div>
+     <div class="form-group"><label class="form-label" for="classroomSelect">🏫 使用教室</label> <select class="form-select" id="classroomSelect"> <option value="不使用教室">不使用教室</option> </select>
+     </div>
+     <div class="form-group">
+      <div class="checkbox-group"><input type="checkbox" class="checkbox-input" id="leaveCheckbox"> <label class="form-label" for="leaveCheckbox" style="margin: 0;">🏖️ 該節請假</label>
+      </div>
+     </div>
+     <div class="form-group"><label class="form-label" for="noteInput">📝 備註</label> <input type="text" class="form-input" id="noteInput" placeholder="請輸入備註">
+     </div>
+     <div class="modal-buttons"><button type="button" class="modal-btn secondary" id="cancelScheduleBtn">取消</button> <button type="submit" class="modal-btn primary" id="saveScheduleBtn">💾 儲存</button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <div class="modal" id="queryModal">
+   <div class="modal-content">
+    <div class="modal-header">
+     🔍 時間查詢
+    </div>
+    <div class="query-time-controls"><button class="time-jump-btn" id="prevYearBtn">⏮️ 上一年</button> <button class="time-jump-btn" id="prevMonthBtn">⏪ 上個月</button> <button class="time-jump-btn" id="nextMonthBtn">⏩ 下個月</button> <button class="time-jump-btn" id="nextYearBtn">⏭️ 下一年</button>
+    </div>
+    <div class="modal-buttons"><button type="button" class="modal-btn secondary" id="cancelQueryBtn">關閉</button>
+    </div>
+   </div>
+  </div>
+  <div class="modal" id="confirmModal">
+   <div class="modal-content confirmation-modal">
+    <div class="modal-header" id="confirmModalTitle">
+     ⚠️ 確認操作
+    </div>
+    <div class="confirmation-text" id="confirmModalText"></div>
+    <div class="modal-buttons"><button type="button" class="modal-btn secondary" id="cancelConfirmBtn">取消</button> <button type="button" class="modal-btn danger" id="confirmActionBtn">確認</button>
+    </div>
+   </div>
+  </div>
+  <script>
+    const DEFAULT_TEACHERS = [
+      {name: '專輔聖揚', color: '#7accff', order: 1},
+      {name: '專輔宜儒', color: '#ff9ecf', order: 2},
+      {name: '輔導組長', color: '#d6bcfa', order: 3},
+      {name: '親職組長', color: '#ffd699', order: 4},
+      {name: '特教組長', color: '#ffe3e3', order: 5},
+      {name: '輔導主任', color: '#c7fae9', order: 6},
+      {name: '學前巡迴', color: '#cfe2fa', order: 7},
+      {name: '心理師', color: '#ff9999', order: 8},
+      {name: '社工師', color: '#99acff', order: 9},
+      {name: '專業人員', color: '#4ade80', order: 10},
+      {name: '其他', color: '#e6e6e6', order: 11},
+      {name: '重要活動', color: '#ff6b6b', order: 12},
+      {name: '', color: '#6b7280', order: 13},
+      {name: '', color: '#6b7280', order: 14},
+      {name: '', color: '#6b7280', order: 15},
+      {name: '', color: '#6b7280', order: 16},
+      {name: '', color: '#6b7280', order: 17}
+    ];
+
+    const DEFAULT_ACTIVITIES = [
+      '個別輔導', '團體輔導', '親師諮詢', '學生諮詢', '臨案協處', 
+      '心理諮商', '授課', '代課', '活動', '研習', '開會', '放假', '其他',
+      '', '', '', '', '', '', ''
+    ];
+
+    const DEFAULT_CLASSROOMS = [
+      {name: '諮商室', color: '#fbbf24', order: 1},
+      {name: '校史室', color: '#34d399', order: 2},
+      {name: '', color: '#60a5fa', order: 3},
+      {name: '', color: '#f472b6', order: 4},
+      {name: '', color: '#a78bfa', order: 5},
+      {name: '', color: '#fb923c', order: 6},
+      {name: '', color: '#4ade80', order: 7},
+      {name: '', color: '#38bdf8', order: 8},
+      {name: '', color: '#fb7185', order: 9},
+      {name: '', color: '#c084fc', order: 10}
+    ];
+
+    const DEFAULT_CONFIG = {
+      system_title: '💡 輔導處智慧課表管理系統',
+      admin_password: 'ljps@418'
+    };
+
+    const weekdays = ['週一', '週二', '週三', '週四', '週五'];
+    const periods = ['早自修', '第一節', '第二節', '第三節', '第四節', '午休', '第五節', '第六節', '第七節'];
+
+    let allData = [];
+    let currentWeekOffset = 0;
+    let isAdminMode = false;
+    let editingBatchId = null;
+    let editingWeekday = null;
+    let currentTab = 'complete';
+    let hiddenTeachers = new Set();
+    let sidebarCollapsed = false;
+    let isSaving = false;
+    let isCopying = false;
+    let confirmCallback = null;
+
+    let cachedTeachers = null;
+    let cachedActivities = null;
+    let cachedClassrooms = null;
+    let cachedSystemTitle = null;
+    let cachedAdminPassword = null;
+
+    function renderEmptySchedule() {
+      const container = document.getElementById('scheduleContainer');
+      
+      let html = '<div class="schedule-layout">';
+      
+      const teachers = getTeachers();
+      html += renderSidebar(teachers);
+      
+      html += '<div class="schedule-main">';
+      html += '<table class="schedule-table">';
+      html += '<thead><tr>';
+      html += '<th class="period-header">時段</th>';
+      for (let day of weekdays) {
+        html += `<th>${day}</th>`;
+      }
+      html += '</tr></thead>';
+      html += '<tbody>';
+      
+      for (let period of periods) {
+        html += '<tr>';
+        html += `<th class="period-header">${period}</th>`;
+        for (let i = 0; i < 5; i++) {
+          html += '<td></td>';
+        }
+        html += '</tr>';
+      }
+      
+      html += '</tbody></table>';
+      html += '</div>';
+      html += '</div>';
+      
+      container.innerHTML = html;
+    }
+
+    function loadConfigFromDatabase() {
+      const teachersData = allData.find(d => d.data_type === 'teachers_config');
+      const activitiesData = allData.find(d => d.data_type === 'activities_config');
+      const classroomsData = allData.find(d => d.data_type === 'classrooms_config');
+      const systemTitleData = allData.find(d => d.data_type === 'system_title');
+      const adminPasswordData = allData.find(d => d.data_type === 'admin_password');
+
+      if (teachersData && teachersData.config_json) {
+        try {
+          cachedTeachers = JSON.parse(teachersData.config_json);
+        } catch (e) {
+          cachedTeachers = JSON.parse(JSON.stringify(DEFAULT_TEACHERS));
+        }
+      } else {
+        cachedTeachers = JSON.parse(JSON.stringify(DEFAULT_TEACHERS));
+      }
+
+      if (activitiesData && activitiesData.config_json) {
+        try {
+          cachedActivities = JSON.parse(activitiesData.config_json);
+        } catch (e) {
+          cachedActivities = JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES));
+        }
+      } else {
+        cachedActivities = JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES));
+      }
+
+      if (classroomsData && classroomsData.config_json) {
+        try {
+          cachedClassrooms = JSON.parse(classroomsData.config_json);
+        } catch (e) {
+          cachedClassrooms = JSON.parse(JSON.stringify(DEFAULT_CLASSROOMS));
+        }
+      } else {
+        cachedClassrooms = JSON.parse(JSON.stringify(DEFAULT_CLASSROOMS));
+      }
+
+      cachedSystemTitle = systemTitleData ? systemTitleData.config_json : DEFAULT_CONFIG.system_title;
+      cachedAdminPassword = adminPasswordData ? adminPasswordData.config_json : DEFAULT_CONFIG.admin_password;
+    }
+
+    function getTeachers() {
+      return cachedTeachers || JSON.parse(JSON.stringify(DEFAULT_TEACHERS));
+    }
+
+    function getActivities() {
+      return cachedActivities || JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES));
+    }
+
+    function getClassrooms() {
+      return cachedClassrooms || JSON.parse(JSON.stringify(DEFAULT_CLASSROOMS));
+    }
+
+    function getSystemTitle() {
+      return cachedSystemTitle || DEFAULT_CONFIG.system_title;
+    }
+
+    function getAdminPassword() {
+      return cachedAdminPassword || DEFAULT_CONFIG.admin_password;
+    }
+
+    function getTeacherColor(teacherName) {
+      const teachers = getTeachers();
+      const teacher = teachers.find(t => t.name === teacherName);
+      return teacher ? teacher.color : '#6b7280';
+    }
+
+    function getClassroomColor(classroomName) {
+      const classrooms = getClassrooms();
+      const classroom = classrooms.find(c => c.name === classroomName);
+      return classroom ? classroom.color : '#94a3b8';
+    }
+
+    const dataHandler = {
+      onDataChanged(data) {
+        allData = data;
+        loadConfigFromDatabase();
+        
+        updateSystemTitle();
+        populateModalSelects();
+        renderSchedule();
+        updateStats();
+        updateQuickCopyButton();
+      }
+    };
+
+    function updateSystemTitle() {
+      document.getElementById('systemTitle').textContent = getSystemTitle();
+    }
+
+    function getWeekDates(offset) {
+      const now = new Date();
+      const currentDay = now.getDay();
+      const diff = currentDay === 0 ? -6 : 1 - currentDay;
+      const monday = new Date(now);
+      monday.setDate(now.getDate() + diff + (offset * 7));
+      monday.setHours(0, 0, 0, 0);
+      
+      const friday = new Date(monday);
+      friday.setDate(monday.getDate() + 4);
+      
+      return {
+        start: monday,
+        end: friday,
+        startStr: monday.toISOString().split('T')[0],
+        endStr: friday.toISOString().split('T')[0]
+      };
+    }
+
+    function formatDateRange(dates) {
+      const start = dates.start;
+      const end = dates.end;
+      return `${start.getFullYear()}年${start.getMonth() + 1}月${start.getDate()}日 - ${end.getFullYear()}年${end.getMonth() + 1}月${end.getDate()}日`;
+    }
+
+    function updateDateDisplay() {
+      const dates = getWeekDates(currentWeekOffset);
+      document.getElementById('dateDisplay').textContent = formatDateRange(dates);
+    }
+
+    function getCurrentWeekSchedules() {
+      const dates = getWeekDates(currentWeekOffset);
+      return allData.filter(s => s.data_type === 'schedule' && s.week_start === dates.startStr);
+    }
+
+    function updateStats() {
+      const weekSchedules = getCurrentWeekSchedules();
+      
+      const batchGroups = new Map();
+      weekSchedules.forEach(s => {
+        const batchKey = s.batch_id.split('_').slice(0, -1).join('_');
+        if (!batchGroups.has(batchKey)) {
+          batchGroups.set(batchKey, new Set());
+        }
+        batchGroups.get(batchKey).add(s.weekday);
+      });
+      
+      let totalBatches = 0;
+      batchGroups.forEach(weekdays => {
+        totalBatches += weekdays.size;
+      });
+      
+      document.getElementById('weekScheduleCount').textContent = totalBatches;
+      
+      const classroomSessions = weekSchedules.filter(s => s.classroom && s.classroom.trim() !== '' && s.classroom !== '不使用教室').length;
+      document.getElementById('classroomCount').textContent = classroomSessions;
+      
+      const leavesByWeekday = {};
+      weekSchedules.forEach(s => {
+        if (s.is_leave) {
+          const key = `${s.weekday}_${s.teacher}`;
+          leavesByWeekday[key] = true;
+        }
+      });
+      document.getElementById('leaveCount').textContent = Object.keys(leavesByWeekday).length;
+    }
+
+    function updateQuickCopyButton() {
+      const weekSchedules = getCurrentWeekSchedules();
+      const quickCopyBtn = document.getElementById('quickCopyBtn');
+      
+      if (weekSchedules.length > 0) {
+        quickCopyBtn.disabled = true;
+      } else {
+        quickCopyBtn.disabled = false;
+      }
+    }
+
+    function populateModalSelects() {
+      const teachers = getTeachers();
+      const activities = getActivities();
+      const classrooms = getClassrooms();
+      
+      const teacherSelect = document.getElementById('teacherSelect');
+      const activitySelect = document.getElementById('activityTypeSelect');
+      const classroomSelect = document.getElementById('classroomSelect');
+      
+      if (teacherSelect) {
+        teacherSelect.innerHTML = '<option value="">請選擇人員...</option>';
+        teachers.forEach(t => {
+          if (t.name && t.name.trim() !== '') {
+            const option = document.createElement('option');
+            option.value = t.name;
+            option.textContent = t.name;
+            teacherSelect.appendChild(option);
+          }
+        });
+      }
+      
+      if (activitySelect) {
+        activitySelect.innerHTML = '<option value="">請選擇活動類型...</option>';
+        activities.forEach(activity => {
+          if (activity && activity.trim() !== '') {
+            const option = document.createElement('option');
+            option.value = activity;
+            option.textContent = activity;
+            activitySelect.appendChild(option);
+          }
+        });
+      }
+      
+      if (classroomSelect) {
+        classroomSelect.innerHTML = '<option value="不使用教室">不使用教室</option>';
+        classrooms.forEach(c => {
+          if (c.name && c.name.trim() !== '') {
+            const option = document.createElement('option');
+            option.value = c.name;
+            option.textContent = c.name;
+            classroomSelect.appendChild(option);
+          }
+        });
+      }
+    }
+
+    function setupModalEventListeners() {
+      const teacherSelect = document.getElementById('teacherSelect');
+      const activitySelect = document.getElementById('activityTypeSelect');
+      const classroomSelect = document.getElementById('classroomSelect');
+      
+      if (teacherSelect) {
+        teacherSelect.removeEventListener('change', handleTeacherChange);
+        teacherSelect.addEventListener('change', handleTeacherChange);
+      }
+      
+      if (activitySelect) {
+        activitySelect.removeEventListener('change', handleActivityChange);
+        activitySelect.addEventListener('change', handleActivityChange);
+      }
+      
+      if (classroomSelect) {
+        classroomSelect.removeEventListener('change', checkClassroomConflict);
+        classroomSelect.addEventListener('change', checkClassroomConflict);
+      }
+      
+      document.querySelectorAll('.weekday-checkbox, .period-checkbox').forEach(cb => {
+        cb.removeEventListener('change', checkClassroomConflict);
+        cb.addEventListener('change', checkClassroomConflict);
+      });
+    }
+
+    function checkClassroomConflict() {
+      const classroom = document.getElementById('classroomSelect').value;
+      const selectedDays = Array.from(document.querySelectorAll('.weekday-checkbox:checked')).map(cb => cb.value);
+      const selectedPeriods = Array.from(document.querySelectorAll('.period-checkbox:checked')).map(cb => cb.value);
+      const warningBox = document.getElementById('classroomWarning');
+      
+      if (!classroom || classroom === '不使用教室' || selectedDays.length === 0 || selectedPeriods.length === 0) {
+        warningBox.style.display = 'none';
+        return;
+      }
+      
+      const weekSchedules = getCurrentWeekSchedules();
+      let hasConflict = false;
+      
+      for (let day of selectedDays) {
+        for (let period of selectedPeriods) {
+          const existingInClassroom = weekSchedules.filter(s => 
+            s.weekday === day && 
+            s.period === period && 
+            s.classroom === classroom &&
+            !(editingBatchId && s.batch_id === editingBatchId && s.weekday === editingWeekday)
+          );
+          
+          if (existingInClassroom.length > 0) {
+            hasConflict = true;
+            break;
+          }
+        }
+        if (hasConflict) break;
+      }
+      
+      warningBox.style.display = hasConflict ? 'block' : 'none';
+    }
+
+    function handleTeacherChange() {
+      const teacher = document.getElementById('teacherSelect').value;
+      const activitySelect = document.getElementById('activityTypeSelect');
+      const classroomSelect = document.getElementById('classroomSelect');
+      
+      if (teacher === '專輔聖揚' || teacher === '專輔宜儒') {
+        activitySelect.value = '個別輔導';
+        classroomSelect.value = '諮商室';
+      } else if (teacher === '心理師') {
+        activitySelect.value = '心理諮商';
+        classroomSelect.value = '諮商室';
+      } else {
+        activitySelect.value = '授課';
+        classroomSelect.value = '不使用教室';
+      }
+      
+      checkClassroomConflict();
+    }
+
+    function handleActivityChange() {
+      const activity = document.getElementById('activityTypeSelect').value;
+      const classroomSelect = document.getElementById('classroomSelect');
+      
+      const counselingTypes = ['個別輔導', '團體輔導', '親師諮詢', '學生諮詢', '心理諮商'];
+      if (counselingTypes.includes(activity)) {
+        classroomSelect.value = '諮商室';
+      }
+      
+      checkClassroomConflict();
+    }
+
+    function renderSchedule() {
+      const container = document.getElementById('scheduleContainer');
+      
+      if (currentTab === 'settings') {
+        renderSettingsView(container);
+        return;
+      }
+      
+      if (currentTab === 'individual') {
+        renderIndividualView(container);
+        return;
+      }
+      
+      if (currentTab === 'support') {
+        renderSupportView(container);
+        return;
+      }
+      
+      if (currentTab === 'classroom') {
+        renderClassroomView(container);
+        return;
+      }
+      
+      if (currentTab === 'simple') {
+        renderSimpleView(container);
+        return;
+      }
+      
+      renderCompleteView(container);
+    }
+
+    function renderCompleteView(container) {
+      const weekSchedules = getCurrentWeekSchedules();
+      const teachers = getTeachers();
+      
+      let html = '<div class="schedule-layout">';
+      html += renderSidebar(teachers);
+      
+      html += '<div class="schedule-main">';
+      html += '<table class="schedule-table">';
+      html += '<thead><tr>';
+      html += '<th class="period-header">時段</th>';
+      for (let day of weekdays) {
+        html += `<th>${day}</th>`;
+      }
+      html += '</tr></thead>';
+      
+      html += '<tbody>';
+      for (let period of periods) {
+        html += '<tr>';
+        html += `<th class="period-header">${period}</th>`;
+        
+        for (let day of weekdays) {
+          html += '<td>';
+          
+          const activities = weekSchedules.filter(s => 
+            s.weekday === day && s.period === period && !hiddenTeachers.has(s.teacher)
+          );
+          
+          const sortedActivities = activities.sort((a, b) => {
+            const teacherA = teachers.find(t => t.name === a.teacher);
+            const teacherB = teachers.find(t => t.name === b.teacher);
+            const orderA = teacherA ? teacherA.order : 999;
+            const orderB = teacherB ? teacherB.order : 999;
+            return orderA - orderB;
+          });
+          
+          const classroomConflicts = new Map();
+          sortedActivities.forEach(activity => {
+            if (activity.classroom && activity.classroom !== '不使用教室') {
+              const key = activity.classroom;
+              if (!classroomConflicts.has(key)) {
+                classroomConflicts.set(key, []);
+              }
+              classroomConflicts.get(key).push(activity);
+            }
+          });
+          
+          if (sortedActivities.length > 0) {
+            html += '<div class="schedule-badges-container">';
+            
+            for (let activity of sortedActivities) {
+              const teacherColor = getTeacherColor(activity.teacher);
+              const leaveIcon = activity.is_leave ? ' 🏖️' : '';
+              
+              let activityClass = '';
+              if (activity.activity_type === '研習') activityClass = ' training';
+              if (activity.activity_type === '放假') activityClass = ' holiday';
+              
+              let conflictClass = '';
+              if (activity.classroom && activity.classroom !== '不使用教室') {
+                const conflicts = classroomConflicts.get(activity.classroom);
+                if (conflicts && conflicts.length > 1) {
+                  conflictClass = ' conflict';
+                }
+              }
+              
+              html += `<div class="schedule-badge${conflictClass}" style="background: ${teacherColor};">`;
+              html += `<div class="badge-teacher">${activity.teacher}${leaveIcon}</div>`;
+              html += `<div class="badge-activity${activityClass}">${activity.activity_type}</div>`;
+              if (activity.classroom && activity.classroom !== '不使用教室') {
+                html += `<div class="badge-classroom">🏫 ${activity.classroom}</div>`;
+              }
+              if (activity.note && activity.note.trim()) {
+                html += `<div class="badge-note">📝 ${activity.note}</div>`;
+              }
+              
+              if (isAdminMode) {
+                html += '<div class="activity-buttons">';
+                html += `<button class="edit-btn" onclick="editSchedule('${activity.batch_id}', '${day}')">編輯</button>`;
+                html += `<button class="delete-btn" onclick="confirmDelete('${activity.batch_id}', '${day}')">刪除</button>`;
+                html += '</div>';
+              }
+              
+              html += '</div>';
+            }
+            
+            html += '</div>';
+          }
+          
+          html += '</td>';
+        }
+        
+        html += '</tr>';
+      }
+      html += '</tbody>';
+      html += '</table>';
+      html += '</div>';
+      html += '</div>';
+      
+      container.innerHTML = html;
+    }
+
+    function renderSimpleView(container) {
+      const weekSchedules = getCurrentWeekSchedules();
+      const teachers = getTeachers();
+      
+      let html = '<div class="schedule-layout">';
+      html += renderSidebar(teachers);
+      
+      html += '<div class="schedule-main">';
+      html += '<table class="schedule-table">';
+      html += '<thead><tr>';
+      html += '<th class="period-header">時段</th>';
+      for (let day of weekdays) {
+        html += `<th>${day}</th>`;
+      }
+      html += '</tr></thead>';
+      
+      html += '<tbody>';
+      for (let period of periods) {
+        html += '<tr>';
+        html += `<th class="period-header">${period}</th>`;
+        
+        for (let day of weekdays) {
+          html += '<td>';
+          
+          const activities = weekSchedules.filter(s => 
+            s.weekday === day && s.period === period && !hiddenTeachers.has(s.teacher)
+          );
+          
+          const sortedActivities = activities.sort((a, b) => {
+            const teacherA = teachers.find(t => t.name === a.teacher);
+            const teacherB = teachers.find(t => t.name === b.teacher);
+            const orderA = teacherA ? teacherA.order : 999;
+            const orderB = teacherB ? teacherB.order : 999;
+            return orderA - orderB;
+          });
+          
+          if (sortedActivities.length > 0) {
+            html += '<div class="schedule-badges-container">';
+            
+            for (let activity of sortedActivities) {
+              const teacherColor = getTeacherColor(activity.teacher);
+              const leaveIcon = activity.is_leave ? ' 🏖️' : '';
+              
+              html += `<div class="simple-badge" style="background: ${teacherColor};">`;
+              html += `${activity.teacher}${leaveIcon}`;
+              html += '</div>';
+            }
+            
+            html += '</div>';
+          }
+          
+          html += '</td>';
+        }
+        
+        html += '</tr>';
+      }
+      html += '</tbody>';
+      html += '</table>';
+      html += '</div>';
+      html += '</div>';
+      
+      container.innerHTML = html;
+    }
+
+    function renderSupportView(container) {
+      const weekSchedules = getCurrentWeekSchedules();
+      const teachers = getTeachers();
+      
+      let html = '<div class="schedule-main" style="margin: 0 auto;">';
+      html += '<table class="schedule-table">';
+      html += '<thead><tr>';
+      html += '<th class="period-header">時段</th>';
+      for (let day of weekdays) {
+        html += `<th>${day}</th>`;
+      }
+      html += '</tr></thead>';
+      
+      html += '<tbody>';
+      for (let period of periods) {
+        html += '<tr>';
+        html += `<th class="period-header">${period}</th>`;
+        
+        for (let day of weekdays) {
+          html += '<td>';
+          
+          const activities = weekSchedules.filter(s => 
+            s.weekday === day && s.period === period
+          );
+          
+          const busyTeachers = new Set(activities.map(a => a.teacher));
+          
+          const priority1Name = teachers[0] ? teachers[0].name : null;
+          const priority2Name = teachers[1] ? teachers[1].name : null;
+          
+          let supportPerson = null;
+          
+          if (priority1Name && priority2Name) {
+            if (busyTeachers.has(priority1Name) && !busyTeachers.has(priority2Name)) {
+              supportPerson = priority2Name;
+            } else if (!busyTeachers.has(priority1Name) && busyTeachers.has(priority2Name)) {
+              supportPerson = priority1Name;
+            } else if (busyTeachers.has(priority1Name) && busyTeachers.has(priority2Name)) {
+              for (let i = 2; i < 4 && i < teachers.length; i++) {
+                const teacherName = teachers[i].name;
+                if (teacherName && !busyTeachers.has(teacherName)) {
+                  supportPerson = teacherName;
+                  break;
+                }
+              }
+            }
+          }
+          
+          if (supportPerson) {
+            const supportColor = getTeacherColor(supportPerson);
+            html += `<div class="support-badge" style="background: ${supportColor}; color: #000;">`;
+            html += supportPerson;
+            html += '</div>';
+          } else {
+            html += '<div class="all-support">皆可支援</div>';
+          }
+          
+          html += '</td>';
+        }
+        
+        html += '</tr>';
+      }
+      html += '</tbody>';
+      html += '</table>';
+      html += '</div>';
+      
+      container.innerHTML = html;
+    }
+
+    function renderClassroomView(container) {
+      const weekSchedules = getCurrentWeekSchedules();
+      const classrooms = getClassrooms();
+      
+      let html = '<div class="schedule-main" style="margin: 0 auto;">';
+      
+      for (let c of classrooms) {
+        if (!c.name || c.name.trim() === '') continue;
+        
+        const classroomName = c.name;
+        const classroomColor = c.color;
+        
+        html += `<h3 style="margin: 20px 0 10px 20px; color: ${classroomColor}; font-weight: bold;">🏫 ${classroomName}</h3>`;
+        
+        html += '<table class="schedule-table" style="margin-bottom: 30px;">';
+        html += '<thead><tr>';
+        html += '<th class="period-header">時段</th>';
+        for (let day of weekdays) {
+          html += `<th>${day}</th>`;
+        }
+        html += '</tr></thead>';
+        
+        html += '<tbody>';
+        for (let period of periods) {
+          html += '<tr>';
+          html += `<th class="period-header">${period}</th>`;
+          
+          for (let day of weekdays) {
+            html += '<td>';
+            
+            const activities = weekSchedules.filter(s => 
+              s.weekday === day && s.period === period && s.classroom === classroomName
+            );
+            
+            for (let activity of activities) {
+              html += `<div class="classroom-badge" style="background: ${classroomColor};">`;
+              html += `<div class="classroom-name">${classroomName}</div>`;
+              html += `<div class="classroom-teacher">${activity.teacher}</div>`;
+              html += `<div class="classroom-activity">${activity.activity_type}</div>`;
+              html += '</div>';
+            }
+            
+            html += '</td>';
+          }
+          
+          html += '</tr>';
+        }
+        html += '</tbody>';
+        html += '</table>';
+      }
+      
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    function renderSidebar(teachers) {
+      let html = `<div class="teacher-sidebar ${sidebarCollapsed ? 'collapsed' : ''}">`;
+      html += '<div class="sidebar-header">';
+      if (!sidebarCollapsed) {
+        html += '<div class="sidebar-title">👥 人員控制</div>';
+      }
+      html += `<button class="collapse-btn" onclick="toggleSidebar()">${sidebarCollapsed ? '▶️' : '◀️'}</button>`;
+      html += '</div>';
+      
+      html += '<div class="teacher-list">';
+      for (let t of teachers) {
+        if (!t.name || t.name.trim() === '') continue;
+        
+        const teacherName = t.name;
+        const color = t.color;
+        const isHidden = hiddenTeachers.has(teacherName);
+        const toggleClass = isHidden ? 'teacher-toggle-btn hidden-state' : 'teacher-toggle-btn';
+        const toggleText = sidebarCollapsed ? (isHidden ? '👻' : '✔️') : (isHidden ? '👻 隱藏中' : '✔️ 顯示中');
+        
+        html += '<div class="teacher-item">';
+        html += `<div class="teacher-color" style="background: ${color};"></div>`;
+        if (!sidebarCollapsed) {
+          html += `<div class="teacher-name-text">${teacherName}</div>`;
+        }
+        html += `<button class="${toggleClass}" onclick="toggleTeacher('${teacherName}')">${toggleText}</button>`;
+        html += '</div>';
+      }
+      html += '</div>';
+      html += '</div>';
+      
+      return html;
+    }
+
+    function renderIndividualView(container) {
+      const teachers = getTeachers();
+      
+      let html = '<div class="individual-schedule-wrapper">';
+      html += '<h2 style="margin-bottom: 20px; color: #1f2937; font-size: 1.5em;">👤 選擇教師查看個人課表</h2>';
+      html += '<div class="teacher-select-grid">';
+      
+      for (let t of teachers) {
+        if (!t.name || t.name.trim() === '') continue;
+        
+        const teacherName = t.name;
+        const color = t.color;
+        html += `<button class="admin-btn" onclick="selectTeacher('${teacherName}')" style="padding: 15px; font-size: 1em;">`;
+        html += `<span style="display: inline-block; width: 12px; height: 12px; background: ${color}; border-radius: 3px; margin-right: 8px;"></span>`;
+        html += `${teacherName}`;
+        html += `</button>`;
+      }
+      
+      html += '</div>';
+      html += '<div id="individualScheduleContent"></div>';
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    function renderSettingsView(container) {
+      const teachers = getTeachers();
+      const activities = getActivities();
+      const classrooms = getClassrooms();
+      const systemTitle = getSystemTitle();
+      const adminPassword = getAdminPassword();
+      
+      let html = '<div class="settings-container">';
+      
+      html += '<div class="settings-section">';
+      html += '<h2 class="settings-section-title">🔧 系統設定</h2>';
+      
+      html += '<div class="settings-form-group">';
+      html += '<label class="settings-label" for="systemTitleInput">系統標題</label>';
+      html += `<input type="text" class="settings-input" id="systemTitleInput" value="${systemTitle}">`;
+      html += '</div>';
+      
+      html += '<div class="settings-form-group">';
+      html += '<label class="settings-label" for="adminPasswordInput">管理員密碼</label>';
+      html += `<input type="password" class="settings-input" id="adminPasswordInput" value="${adminPassword}">`;
+      html += '</div>';
+      
+      html += '<button class="save-settings-btn" onclick="saveSystemSettings()">💾 儲存系統設定</button>';
+      html += '</div>';
+      
+      html += '<div class="settings-section">';
+      html += '<h2 class="settings-section-title">👥 人員配置（含空白擴充欄位）</h2>';
+      html += '<div class="config-list">';
+      
+      for (let i = 0; i < teachers.length; i++) {
+        const t = teachers[i];
+        const teacherName = t.name || '';
+        const color = t.color;
+        const isNewSlot = !teacherName || teacherName.trim() === '';
+        
+        html += `<div class="config-item${isNewSlot ? ' new-slot' : ''}">`;
+        html += `<div class="color-preview" id="teacher_preview_${i}" style="background: ${color};"></div>`;
+        html += `<input type="text" class="config-name-input" id="teacher_name_${i}" value="${teacherName}" placeholder="${isNewSlot ? '新增人員' : '人員名稱'}">`;
+        html += '<div class="color-picker-wrapper">';
+        html += `<input type="color" class="color-picker" id="teacher_picker_${i}" value="${color}" onchange="updateColorPreview('teacher', ${i}, this.value)">`;
+        html += `<input type="text" class="color-input" id="teacher_input_${i}" value="${color}" oninput="updateColorFromInput('teacher', ${i}, this.value)">`;
+        html += '</div>';
+        html += '</div>';
+      }
+      
+      html += '</div>';
+      html += '<button class="save-settings-btn" onclick="saveTeacherSettings()">💾 儲存人員配置</button>';
+      html += '</div>';
+      
+      html += '<div class="settings-section">';
+      html += '<h2 class="settings-section-title">📚 活動類型配置（含空白擴充欄位）</h2>';
+      html += '<div class="activity-grid">';
+      
+      for (let i = 0; i < activities.length; i++) {
+        const activity = activities[i] || '';
+        const isNewSlot = !activity || activity.trim() === '';
+        
+        html += `<div class="activity-item${isNewSlot ? ' new-slot' : ''}">`;
+        html += `<input type="text" class="activity-input" id="activity_${i}" value="${activity}" placeholder="${isNewSlot ? '新增活動類型' : '活動類型'}">`;
+        html += '</div>';
+      }
+      
+      html += '</div>';
+      html += '<button class="save-settings-btn" onclick="saveActivitySettings()">💾 儲存活動類型</button>';
+      html += '</div>';
+      
+      html += '<div class="settings-section">';
+      html += '<h2 class="settings-section-title">🏫 教室配置（含空白擴充欄位）</h2>';
+      html += '<div class="config-list">';
+      
+      for (let i = 0; i < classrooms.length; i++) {
+        const c = classrooms[i];
+        const classroomName = c.name || '';
+        const color = c.color;
+        const isNewSlot = !classroomName || classroomName.trim() === '';
+        
+        html += `<div class="config-item${isNewSlot ? ' new-slot' : ''}">`;
+        html += `<div class="color-preview" id="classroom_preview_${i}" style="background: ${color};"></div>`;
+        html += `<input type="text" class="config-name-input" id="classroom_name_${i}" value="${classroomName}" placeholder="${isNewSlot ? '新增教室' : '教室名稱'}">`;
+        html += '<div class="color-picker-wrapper">';
+        html += `<input type="color" class="color-picker" id="classroom_picker_${i}" value="${color}" onchange="updateColorPreview('classroom', ${i}, this.value)">`;
+        html += `<input type="text" class="color-input" id="classroom_input_${i}" value="${color}" oninput="updateColorFromInput('classroom', ${i}, this.value)">`;
+        html += '</div>';
+        html += '</div>';
+      }
+      
+      html += '</div>';
+      html += '<button class="save-settings-btn" onclick="saveClassroomSettings()">💾 儲存教室配置</button>';
+      html += '</div>';
+      
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    function selectTeacher(teacherName) {
+      const weekSchedules = getCurrentWeekSchedules();
+      const teacherSchedules = weekSchedules.filter(s => s.teacher === teacherName);
+      const teacherColor = getTeacherColor(teacherName);
+      
+      let html = `<h3 style="margin: 30px 0 20px 0; color: ${teacherColor}; font-size: 1.5em; font-weight: bold;">`;
+      html += `<span style="display: inline-block; width: 20px; height: 20px; background: ${teacherColor}; border-radius: 5px; margin-right: 10px;"></span>`;
+      html += `${teacherName} 的課表</h3>`;
+      
+      html += '<div class="schedule-main">';
+      html += '<table class="schedule-table">';
+      html += '<thead><tr>';
+      html += '<th class="period-header">時段</th>';
+      for (let day of weekdays) {
+        html += `<th>${day}</th>`;
+      }
+      html += '</tr></thead>';
+      
+      html += '<tbody>';
+      for (let period of periods) {
+        html += '<tr>';
+        html += `<th class="period-header">${period}</th>`;
+        
+        for (let day of weekdays) {
+          html += '<td>';
+          
+          const activities = teacherSchedules.filter(s => 
+            s.weekday === day && s.period === period
+          );
+          
+          for (let activity of activities) {
+            const leaveIcon = activity.is_leave ? ' 🏖️' : '';
+            
+            html += `<div class="schedule-badge" style="background: ${teacherColor};">`;
+            html += `<div class="badge-teacher">${activity.activity_type}${leaveIcon}</div>`;
+            if (activity.classroom && activity.classroom !== '不使用教室') {
+              html += `<div class="badge-classroom">🏫 ${activity.classroom}</div>`;
+            }
+            if (activity.note) {
+              html += `<div class="badge-classroom">📝 ${activity.note}</div>`;
+            }
+            html += '</div>';
+          }
+          
+          html += '</td>';
+        }
+        
+        html += '</tr>';
+      }
+      html += '</tbody>';
+      html += '</table>';
+      html += '</div>';
+      
+      document.getElementById('individualScheduleContent').innerHTML = html;
+    }
+
+    function toggleTeacher(teacherName) {
+      if (hiddenTeachers.has(teacherName)) {
+        hiddenTeachers.delete(teacherName);
+      } else {
+        hiddenTeachers.add(teacherName);
+      }
+      renderSchedule();
+    }
+
+    function toggleSidebar() {
+      sidebarCollapsed = !sidebarCollapsed;
+      renderSchedule();
+    }
+
+    function updateColorPreview(type, index, color) {
+      document.getElementById(`${type}_preview_${index}`).style.background = color;
+      document.getElementById(`${type}_input_${index}`).value = color;
+    }
+
+    function updateColorFromInput(type, index, color) {
+      if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
+        document.getElementById(`${type}_preview_${index}`).style.background = color;
+        document.getElementById(`${type}_picker_${index}`).value = color;
+      }
+    }
+
+    async function saveSystemSettings() {
+      const saveBtn = event.target;
+      if (saveBtn) saveBtn.disabled = true;
+      
+      const title = document.getElementById('systemTitleInput').value;
+      const password = document.getElementById('adminPasswordInput').value;
+      
+      const existingTitleData = allData.find(d => d.data_type === 'system_title');
+      const existingPasswordData = allData.find(d => d.data_type === 'admin_password');
+      
+      if (existingTitleData) {
+        existingTitleData.config_json = title;
+        await window.dataSdk.update(existingTitleData);
+      } else {
+        await window.dataSdk.create({
+          id: `config_system_title_${Date.now()}`,
+          data_type: 'system_title',
+          config_json: title
+        });
+      }
+      
+      if (existingPasswordData) {
+        existingPasswordData.config_json = password;
+        await window.dataSdk.update(existingPasswordData);
+      } else {
+        await window.dataSdk.create({
+          id: `config_admin_password_${Date.now()}`,
+          data_type: 'admin_password',
+          config_json: password
+        });
+      }
+      
+      if (saveBtn) saveBtn.disabled = false;
+      showToast('✅ 系統設定已儲存');
+    }
+
+    async function saveTeacherSettings() {
+      const saveBtn = event.target;
+      saveBtn.disabled = true;
+      
+      const teachers = getTeachers();
+      const newTeachersArray = [];
+      
+      for (let i = 0; i < teachers.length; i++) {
+        const nameInput = document.getElementById(`teacher_name_${i}`);
+        const colorInput = document.getElementById(`teacher_input_${i}`);
+        
+        if (nameInput && colorInput) {
+          newTeachersArray.push({
+            name: nameInput.value.trim(),
+            color: colorInput.value,
+            order: i + 1
+          });
+        }
+      }
+      
+      const configJson = JSON.stringify(newTeachersArray);
+      const existingConfig = allData.find(d => d.data_type === 'teachers_config');
+      
+      if (existingConfig) {
+        existingConfig.config_json = configJson;
+        await window.dataSdk.update(existingConfig);
+      } else {
+        await window.dataSdk.create({
+          id: `config_teachers_${Date.now()}`,
+          data_type: 'teachers_config',
+          config_json: configJson
+        });
+      }
+      
+      saveBtn.disabled = false;
+      showToast('✅ 人員配置已儲存');
+    }
+
+    async function saveActivitySettings() {
+      const saveBtn = event.target;
+      saveBtn.disabled = true;
+      
+      const activities = getActivities();
+      const newActivitiesArray = [];
+      
+      for (let i = 0; i < activities.length; i++) {
+        const activityInput = document.getElementById(`activity_${i}`);
+        
+        if (activityInput) {
+          newActivitiesArray.push(activityInput.value.trim());
+        }
+      }
+      
+      const configJson = JSON.stringify(newActivitiesArray);
+      const existingConfig = allData.find(d => d.data_type === 'activities_config');
+      
+      if (existingConfig) {
+        existingConfig.config_json = configJson;
+        await window.dataSdk.update(existingConfig);
+      } else {
+        await window.dataSdk.create({
+          id: `config_activities_${Date.now()}`,
+          data_type: 'activities_config',
+          config_json: configJson
+        });
+      }
+      
+      saveBtn.disabled = false;
+      showToast('✅ 活動類型已儲存');
+    }
+
+    async function saveClassroomSettings() {
+      const saveBtn = event.target;
+      saveBtn.disabled = true;
+      
+      const classrooms = getClassrooms();
+      const newClassroomsArray = [];
+      
+      for (let i = 0; i < classrooms.length; i++) {
+        const nameInput = document.getElementById(`classroom_name_${i}`);
+        const colorInput = document.getElementById(`classroom_input_${i}`);
+        
+        if (nameInput && colorInput) {
+          newClassroomsArray.push({
+            name: nameInput.value.trim(),
+            color: colorInput.value,
+            order: i + 1
+          });
+        }
+      }
+      
+      const configJson = JSON.stringify(newClassroomsArray);
+      const existingConfig = allData.find(d => d.data_type === 'classrooms_config');
+      
+      if (existingConfig) {
+        existingConfig.config_json = configJson;
+        await window.dataSdk.update(existingConfig);
+      } else {
+        await window.dataSdk.create({
+          id: `config_classrooms_${Date.now()}`,
+          data_type: 'classrooms_config',
+          config_json: configJson
+        });
+      }
+      
+      saveBtn.disabled = false;
+      showToast('✅ 教室配置已儲存');
+    }
+
+    async function saveSchedule(event) {
+      event.preventDefault();
+      
+      if (isSaving) {
+        showToast('⏳ 正在儲存，請稍候...');
+        return;
+      }
+      
+      isSaving = true;
+      document.getElementById('saveScheduleBtn').disabled = true;
+      
+      const selectedDays = Array.from(document.querySelectorAll('.weekday-checkbox:checked')).map(cb => cb.value);
+      const selectedPeriods = Array.from(document.querySelectorAll('.period-checkbox:checked')).map(cb => cb.value);
+      const teacher = document.getElementById('teacherSelect').value;
+      const activityType = document.getElementById('activityTypeSelect').value;
+      const classroom = document.getElementById('classroomSelect').value;
+      const isLeave = document.getElementById('leaveCheckbox').checked;
+      const note = document.getElementById('noteInput').value;
+      
+      if (selectedDays.length === 0 || selectedPeriods.length === 0) {
+        showToast('⚠️ 請選擇星期和時段');
+        isSaving = false;
+        document.getElementById('saveScheduleBtn').disabled = false;
+        return;
+      }
+      
+      const dates = getWeekDates(currentWeekOffset);
+      
+      if (editingBatchId && editingWeekday) {
+        const toDelete = allData.filter(s => s.data_type === 'schedule' && s.batch_id === editingBatchId && s.weekday === editingWeekday);
+        for (let schedule of toDelete) {
+          await window.dataSdk.delete(schedule);
+        }
+        
+        for (let day of selectedDays) {
+          const batchId = day === editingWeekday ? editingBatchId : `batch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}_${day}`;
+          
+          for (let period of selectedPeriods) {
+            const scheduleData = {
+              id: `${batchId}_${period}`,
+              data_type: 'schedule',
+              teacher: teacher,
+              weekday: day,
+              period: period,
+              activity_type: activityType,
+              classroom: classroom,
+              is_leave: isLeave,
+              note: note,
+              week_start: dates.startStr,
+              batch_id: batchId
+            };
+            
+            const result = await window.dataSdk.create(scheduleData);
+            if (!result.isOk) {
+              showToast('❌ 儲存失敗，請重試');
+              isSaving = false;
+              document.getElementById('saveScheduleBtn').disabled = false;
+              return;
+            }
+          }
+        }
+      } else {
+        for (let day of selectedDays) {
+          const batchId = `batch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}_${day}`;
+          
+          for (let period of selectedPeriods) {
+            const scheduleData = {
+              id: `${batchId}_${period}`,
+              data_type: 'schedule',
+              teacher: teacher,
+              weekday: day,
+              period: period,
+              activity_type: activityType,
+              classroom: classroom,
+              is_leave: isLeave,
+              note: note,
+              week_start: dates.startStr,
+              batch_id: batchId
+            };
+            
+            const result = await window.dataSdk.create(scheduleData);
+            if (!result.isOk) {
+              showToast('❌ 儲存失敗，請重試');
+              isSaving = false;
+              document.getElementById('saveScheduleBtn').disabled = false;
+              return;
+            }
+          }
+        }
+      }
+      
+      closeScheduleModal();
+      showToast(editingBatchId ? '✅ 排程已更新' : '✅ 排程已新增');
+      editingBatchId = null;
+      editingWeekday = null;
+      isSaving = false;
+      document.getElementById('saveScheduleBtn').disabled = false;
+    }
+
+    function editSchedule(batchId, weekday) {
+      showConfirm(
+        '✏️ 確認編輯',
+        `確定要編輯「${weekday}」的這組排程嗎？`,
+        () => {
+          const schedules = allData.filter(s => s.data_type === 'schedule' && s.batch_id === batchId && s.weekday === weekday);
+          if (schedules.length === 0) return;
+          
+          const first = schedules[0];
+          editingBatchId = batchId;
+          editingWeekday = weekday;
+          
+          document.getElementById('scheduleModalTitle').textContent = '✏️ 編輯排程';
+          document.getElementById('teacherSelect').value = first.teacher;
+          document.getElementById('activityTypeSelect').value = first.activity_type;
+          document.getElementById('classroomSelect').value = first.classroom || '不使用教室';
+          document.getElementById('leaveCheckbox').checked = first.is_leave;
+          document.getElementById('noteInput').value = first.note || '';
+          
+          document.querySelectorAll('.weekday-checkbox').forEach(cb => {
+            cb.checked = cb.value === weekday;
+          });
+          
+          document.querySelectorAll('.period-checkbox').forEach(cb => {
+            cb.checked = schedules.some(s => s.period === cb.value);
+          });
+          
+          checkClassroomConflict();
+          document.getElementById('scheduleModal').classList.add('active');
+        }
+      );
+    }
+
+    function confirmDelete(batchId, weekday) {
+      showConfirm(
+        '🗑️ 確認刪除',
+        `<span class="warning-text">確定要刪除「${weekday}」的這組排程嗎？此操作無法復原。</span>`,
+        async () => {
+          const schedules = allData.filter(s => s.data_type === 'schedule' && s.batch_id === batchId && s.weekday === weekday);
+          
+          for (let schedule of schedules) {
+            await window.dataSdk.delete(schedule);
+          }
+          
+          showToast('✅ 排程已刪除');
+        }
+      );
+    }
+
+    async function quickCopy() {
+      if (isCopying) {
+        showToast('⏳ 正在複製，請稍候...');
+        return;
+      }
+      
+      const weekSchedules = getCurrentWeekSchedules();
+      if (weekSchedules.length > 0) {
+        showToast('⚠️ 本週已有資料，無法複製');
+        return;
+      }
+      
+      showConfirm(
+        '🔄 確認複製',
+        '確定要將上週的排程複製到本週嗎？',
+        async () => {
+          isCopying = true;
+          document.getElementById('quickCopyBtn').disabled = true;
+          
+          const currentDates = getWeekDates(currentWeekOffset);
+          const prevDates = getWeekDates(currentWeekOffset - 1);
+          
+          const prevWeekSchedules = allData.filter(s => s.data_type === 'schedule' && s.week_start === prevDates.startStr);
+          
+          if (prevWeekSchedules.length === 0) {
+            showToast('ℹ️ 上週無資料可複製');
+            isCopying = false;
+            document.getElementById('quickCopyBtn').disabled = false;
+            return;
+          }
+          
+          const batchMapping = new Map();
+          
+          for (let schedule of prevWeekSchedules) {
+            const originalBatchBase = schedule.batch_id.split('_').slice(0, -1).join('_');
+            
+            if (!batchMapping.has(originalBatchBase)) {
+              const newBatchBase = `batch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+              batchMapping.set(originalBatchBase, newBatchBase);
+            }
+            
+            const newBatchBase = batchMapping.get(originalBatchBase);
+            const newBatchId = `${newBatchBase}_${schedule.weekday}`;
+            
+            const newSchedule = {
+              id: `${newBatchId}_${schedule.period}`,
+              data_type: 'schedule',
+              teacher: schedule.teacher,
+              weekday: schedule.weekday,
+              period: schedule.period,
+              activity_type: schedule.activity_type,
+              classroom: schedule.classroom,
+              is_leave: schedule.is_leave,
+              note: schedule.note,
+              week_start: currentDates.startStr,
+              batch_id: newBatchId
+            };
+            
+            await window.dataSdk.create(newSchedule);
+          }
+          
+          showToast('✅ 已複製上週資料');
+          isCopying = false;
+          document.getElementById('quickCopyBtn').disabled = false;
+        }
+      );
+    }
+
+    async function clearWeek() {
+      showConfirm(
+        '🗑️ 確認清空',
+        '<span class="warning-text">確定要清空本週所有排程資料嗎？此操作無法復原。</span>',
+        async () => {
+          const dates = getWeekDates(currentWeekOffset);
+          const weekSchedules = allData.filter(s => s.data_type === 'schedule' && s.week_start === dates.startStr);
+          
+          if (weekSchedules.length === 0) {
+            showToast('ℹ️ 本週無資料');
+            return;
+          }
+          
+          for (let schedule of weekSchedules) {
+            await window.dataSdk.delete(schedule);
+          }
+          
+          showToast('✅ 本週資料已清空');
+        }
+      );
+    }
+
+    function openScheduleModal() {
+      editingBatchId = null;
+      editingWeekday = null;
+      document.getElementById('scheduleModalTitle').textContent = '📝 新增排程';
+      document.getElementById('scheduleForm').reset();
+      document.getElementById('classroomWarning').style.display = 'none';
+      
+      populateModalSelects();
+      setupModalEventListeners();
+      handleTeacherChange();
+      
+      document.getElementById('scheduleModal').classList.add('active');
+    }
+
+    function closeScheduleModal() {
+      document.getElementById('scheduleModal').classList.remove('active');
+      editingBatchId = null;
+      editingWeekday = null;
+    }
+
+    function openQueryModal() {
+      document.getElementById('queryModal').classList.add('active');
+    }
+
+    function closeQueryModal() {
+      document.getElementById('queryModal').classList.remove('active');
+    }
+
+    function showConfirm(title, message, callback) {
+      document.getElementById('confirmModalTitle').textContent = title;
+      document.getElementById('confirmModalText').innerHTML = message;
+      confirmCallback = callback;
+      document.getElementById('confirmModal').classList.add('active');
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('confirmModal').classList.remove('active');
+      confirmCallback = null;
+    }
+
+    function executeConfirm() {
+      if (confirmCallback) {
+        confirmCallback();
+      }
+      closeConfirmModal();
+    }
+
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+
+    document.getElementById('prevWeekBtn').addEventListener('click', () => {
+      currentWeekOffset--;
+      updateDateDisplay();
+      renderSchedule();
+      updateStats();
+      updateQuickCopyButton();
+    });
+
+    document.getElementById('thisWeekBtn').addEventListener('click', () => {
+      currentWeekOffset = 0;
+      updateDateDisplay();
+      renderSchedule();
+      updateStats();
+      updateQuickCopyButton();
+    });
+
+    document.getElementById('nextWeekBtn').addEventListener('click', () => {
+      currentWeekOffset++;
+      updateDateDisplay();
+      renderSchedule();
+      updateStats();
+      updateQuickCopyButton();
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      if (isAdminMode) {
+        isAdminMode = false;
+        document.getElementById('loginBtn').innerHTML = '🔒 管理員登入';
+        document.getElementById('loginBtn').classList.remove('logged-in');
+        document.getElementById('adminTools').style.display = 'none';
+        document.getElementById('settingsTab').classList.remove('visible');
+        
+        if (currentTab === 'settings') {
+          currentTab = 'complete';
+          document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+          document.querySelector('[data-tab="complete"]').classList.add('active');
+        }
+        
+        renderSchedule();
+        showToast('✅ 已登出管理員模式');
+      } else {
+        document.getElementById('loginModal').classList.add('active');
+      }
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const password = document.getElementById('loginPassword').value;
+      const correctPassword = getAdminPassword();
+      
+      if (password === correctPassword) {
+        isAdminMode = true;
+        document.getElementById('loginBtn').innerHTML = '✅ 管理員模式';
+        document.getElementById('loginBtn').classList.add('logged-in');
+        document.getElementById('adminTools').style.display = 'flex';
+        document.getElementById('settingsTab').classList.add('visible');
+        document.getElementById('loginModal').classList.remove('active');
+        document.getElementById('loginPassword').value = '';
+        renderSchedule();
+        showToast('✅ 已進入管理員模式');
+      } else {
+        showToast('❌ 密碼錯誤');
+      }
+    });
+
+    document.getElementById('cancelLoginBtn').addEventListener('click', () => {
+      document.getElementById('loginModal').classList.remove('active');
+      document.getElementById('loginPassword').value = '';
+    });
+
+    document.getElementById('newScheduleBtn').addEventListener('click', openScheduleModal);
+    document.getElementById('cancelScheduleBtn').addEventListener('click', closeScheduleModal);
+    document.getElementById('scheduleForm').addEventListener('submit', saveSchedule);
+    document.getElementById('quickCopyBtn').addEventListener('click', quickCopy);
+    document.getElementById('clearBtn').addEventListener('click', clearWeek);
+    document.getElementById('queryBtn').addEventListener('click', openQueryModal);
+    document.getElementById('cancelQueryBtn').addEventListener('click', closeQueryModal);
+    document.getElementById('cancelConfirmBtn').addEventListener('click', closeConfirmModal);
+    document.getElementById('confirmActionBtn').addEventListener('click', executeConfirm);
+
+    document.getElementById('prevYearBtn').addEventListener('click', () => {
+      currentWeekOffset -= 52;
+      updateDateDisplay();
+      renderSchedule();
+      updateStats();
+      updateQuickCopyButton();
+      closeQueryModal();
+    });
+
+    document.getElementById('prevMonthBtn').addEventListener('click', () => {
+      currentWeekOffset -= 4;
+      updateDateDisplay();
+      renderSchedule();
+      updateStats();
+      updateQuickCopyButton();
+      closeQueryModal();
+    });
+
+    document.getElementById('nextMonthBtn').addEventListener('click', () => {
+      currentWeekOffset += 4;
+      updateDateDisplay();
+      renderSchedule();
+      updateStats();
+      updateQuickCopyButton();
+      closeQueryModal();
+    });
+
+    document.getElementById('nextYearBtn').addEventListener('click', () => {
+      currentWeekOffset += 52;
+      updateDateDisplay();
+      renderSchedule();
+      updateStats();
+      updateQuickCopyButton();
+      closeQueryModal();
+    });
+
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentTab = tab.dataset.tab;
+        renderSchedule();
+      });
+    });
+
+    document.querySelectorAll('.font-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        const size = btn.dataset.size;
+        const container = document.getElementById('appContainer');
+        container.classList.remove('font-small', 'font-large');
+        
+        if (size === 'small') {
+          container.classList.add('font-small');
+        } else if (size === 'large') {
+          container.classList.add('font-large');
+        }
+      });
+    });
+
+    async function init() {
+      renderEmptySchedule();
+      updateDateDisplay();
+      
+      const initResult = await window.dataSdk.init(dataHandler);
+      if (!initResult.isOk) {
+        showToast('❌ 系統初始化失敗');
+        return;
+      }
+    }
+
+    init();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d237e27972aa367',t:'MTc3MTgxNTgzNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
